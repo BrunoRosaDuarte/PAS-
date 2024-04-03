@@ -24,22 +24,25 @@ public class AcervoJDBCImpl implements IAcervoRepository{
 
     @Override
     public List<String> getTitulos() {
-        return null;
+        return this.jdbcTemplate.queryForList("SELECT titulo FROM livros", String.class);
     }
 
     @Override
     public List<String> getAutores() {
-        return null;
+        return this.jdbcTemplate.queryForList("SELECT DISTINCT autor FROM livros", String.class);
     }
 
     @Override
     public List<Livro> getLivrosDoAutor(String autor) {
-        return null;
+        return this.jdbcTemplate.query("SELECT * FROM livros WHERE autor = ?", new Object[]{autor},
+                (rs, rowNum) -> new Livro(rs.getLong("codigo"), rs.getString("titulo"), rs.getString("autor"), rs.getInt("ano")));
     }
 
     @Override
     public Livro getLivroTitulo(String titulo) {
-        return null;
+        List<Livro> livros = this.jdbcTemplate.query("SELECT * FROM livros WHERE titulo = ?", new Object[]{titulo},
+                (rs, rowNum) -> new Livro(rs.getLong("codigo"), rs.getString("titulo"), rs.getString("autor"), rs.getInt("ano")));
+        return livros.isEmpty() ? null : livros.get(0);
     }
 
     @Override
